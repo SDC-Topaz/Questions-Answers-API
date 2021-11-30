@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Question = require('./schemas/questions.js')
 const express = require('express');
 const app = express();
 const port = 1000;

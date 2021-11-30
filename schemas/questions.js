@@ -24,6 +24,7 @@ async function insertQuestions () {
 
       if (i % 1000 === 0) {
         await Question.insertMany(questionsChunk)
+        console.log('added 1000')
       }
 
       if (i === lastQuestion) {
@@ -34,4 +35,5 @@ async function insertQuestions () {
   })
 }
 
+insertQuestions()
 module.exports = Question
