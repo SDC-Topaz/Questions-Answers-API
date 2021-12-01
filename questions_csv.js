@@ -5,7 +5,7 @@ const csv = require('@fast-csv/parse');
 function parsePhotos () {
   return new Promise((resolve,reject) => {
     let photos = {}
-    fs.createReadStream('./csv_files/answers_photos_test.csv')
+    fs.createReadStream('./csv_files/answers_photos.csv')
       .pipe(csv.parse({ headers: true }))
       .on('error', error => console.error(error))
       .on('data', row => {
@@ -26,7 +26,7 @@ function parsePhotos () {
 function parseAnswers(photos) {
   return new Promise((resolve, reject) => {
     let answers = {}
-    fs.createReadStream('./csv_files/answers_test.csv')
+    fs.createReadStream('./csv_files/answers.csv')
       .pipe(csv.parse({ headers: true }))
       .on('error', error => console.error(error))
       .on('data', row => {
@@ -51,7 +51,7 @@ function parseAnswers(photos) {
 function parseQuestions(answers) {
   return new Promise((resolve, reject) => {
     let questions = []
-    fs.createReadStream('./csv_files/questions_test.csv')
+    fs.createReadStream('./csv_files/questions.csv')
     .pipe(csv.parse({ headers: true }))
     .on('error', error => console.error(error))
     .on('data', row => {
@@ -73,6 +73,5 @@ async function questionsCollection() {
   let questions = await parseQuestions(answers);
   return questions;
 }
-//questionsCollection()
 
 module.exports = {questionsCollection}
