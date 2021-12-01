@@ -24,6 +24,7 @@ async function insertQuestions () {
 
       if (i % 1000 === 0) {
         await Question.insertMany(questionsChunk)
+        questionsChunk = []
         console.log('added 1000')
       }
 
