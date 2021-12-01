@@ -9,6 +9,11 @@ const questionSchema = new mongoose.Schema({
   asker_email: String,
   reported: Number,
   helpful: Number
+  answers: [{
+    photos: [{
+
+    }]
+  }]
 })
 
 let Question = mongoose.model("questions", questionSchema);
@@ -36,5 +41,5 @@ async function insertQuestions () {
   })
 }
 
-insertQuestions()
+//insertQuestions()
 module.exports = Question
