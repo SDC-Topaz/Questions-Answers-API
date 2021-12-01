@@ -11,7 +11,7 @@ function parsePhotos () {
       .on('data', row => {
         row.id = Number(row.id);
         row.answer_id = Number(row.answer_id);
-        console.log(row)
+        //console.log(row)
         if (!photos[row.answer_id]) {
           photos[row.answer_id] = [row];
         } else {
@@ -42,34 +42,37 @@ function parseAnswers(photos) {
           answers[row.question_id].push(row);
         }
       })
-      .on('end', rowCount => console.log(answers));
+      .on('end', rowCount => resolve(answers));
   })
 }
 //parseAnswers()
 
-async function nestedAnswers() {
-  let photos = await parsePhotos();
-  let answers = await parseAnswers(photos);
-  return answers;
-}
-//nestedAnswers()
 
-function questionsCollection() {
+function parseQuestions(answers) {
   return new Promise((resolve, reject) => {
-    let results = []
-    fs.createReadStream('./csv_files/questions.csv')
-      .pipe(csv.parse({ headers: true }))
-      .on('error', error => console.error(error))
-      .on('data', row => {
-        row.product_id = Number(row.product_id);
-        row.reported = Number(row.reported);
-        row.helpful = Number(row.helpful);
-        results.push(row)
-      })
-      .on('end', rowCount => resolve(results));
+    let questions = []
+    fs.createReadStream('./csv_files/questions_test.csv')
+    .pipe(csv.parse({ headers: true }))
+    .on('error', error => console.error(error))
+    .on('data', row => {
+      row.id = Number(row.id)
+      row.product_id = Number(row.product_id);
+      row.reported = Number(row.reported);
+      row.helpful = Number(row.helpful);
+      row.answers = answers[row.id]
+      questions.push(row)
+    })
+    .on('end', rowCount => resolve(questions));
   });
 }
 
 
+async function questionsCollection() {
+  let photos = await parsePhotos();
+  let answers = await parseAnswers(photos);
+  let questions = await parseQuestions(answers);
+  return questions;
+}
+//questionsCollection()
 
 module.exports = {questionsCollection}
