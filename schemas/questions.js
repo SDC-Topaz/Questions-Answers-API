@@ -42,7 +42,7 @@ async function insertQuestions () {
       let currQuestion = questions[i];
       questionsChunk.push(currQuestion)
 
-      if (i % 1000 === 0) {
+      if (i % 100 === 0) {
         await Question.insertMany(questionsChunk)
         questionsChunk = []
         console.log('added 1000')
