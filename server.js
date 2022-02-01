@@ -17,10 +17,7 @@ mongoose.connect("mongodb://localhost/Q&A", () => {
   console.log("connected");
 });
 
-//grabs all questions based on the product id
-//all questions contains answers and photos
 app.get("/questions/:product_id", async (req, res) => {
-  //console.log(req.params.product_id);
   let id = req.params.product_id;
 
   try {

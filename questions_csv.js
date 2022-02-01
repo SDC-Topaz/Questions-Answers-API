@@ -1,8 +1,6 @@
 const fs = require("fs");
 const csv = require("@fast-csv/parse");
 
-//let chunk = 10;
-
 function parsePhotos() {
   return new Promise((resolve, reject) => {
     let photos = [];
@@ -71,16 +69,16 @@ function parseQuestions() {
   });
 }
 
-// async function questionsCollection() {
-//   let photos = await parsePhotos();
-//   let answers = await parseAnswers(photos);
-//   let questions = await parseQuestions(answers);
-//   return questions;
-// }
+async function questionsCollection() {
+  let photos = await parsePhotos();
+  let answers = await parseAnswers(photos);
+  let questions = await parseQuestions(answers);
+  return questions;
+}
 
-// async function parsedQuestions() {
-//   let allQuestions = await parseQuestions();
-//   return allQuestions;
-// }
+async function parsedQuestions() {
+  let allQuestions = await parseQuestions();
+  return allQuestions;
+}
 
 module.exports = { parseQuestions, parseAnswers, parsePhotos };
