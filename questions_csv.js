@@ -1,77 +1,86 @@
-const fs = require('fs');
-const csv = require('@fast-csv/parse');
+const fs = require("fs");
+const csv = require("@fast-csv/parse");
 
+//let chunk = 10;
 
-function parsePhotos () {
-  return new Promise((resolve,reject) => {
-    let photos = {}
-    fs.createReadStream('./csv_files/answers_photos_test.csv')
+function parsePhotos() {
+  return new Promise((resolve, reject) => {
+    let photos = [];
+    fs.createReadStream("./testcsv/photos.csv")
       .pipe(csv.parse({ headers: true }))
-      .on('error', error => console.error(error))
-      .on('data', row => {
+      .on("error", (error) => console.error(error))
+      .on("data", (row) => {
         row.id = Number(row.id);
         row.answer_id = Number(row.answer_id);
-        //console.log(row)
-        if (!photos[row.answer_id]) {
-          photos[row.answer_id] = [row];
-        } else {
-          photos[row.answer_id].push(row);
+
+        if (!isNaN(row.id) && !isNaN(row.answer_id)) {
+          photos.push(row);
         }
       })
-      .on('end', rowCount => resolve(photos));
-  })
+      .on("end", (rowCount) => resolve(photos));
+  });
 }
-//parsePhotos()
 
-function parseAnswers(photos) {
+function parseAnswers() {
   return new Promise((resolve, reject) => {
-    let answers = {}
-    fs.createReadStream('./csv_files/answers_test.csv')
+    let answers = [];
+    fs.createReadStream("./testcsv/answers.csv")
       .pipe(csv.parse({ headers: true }))
-      .on('error', error => console.error(error))
-      .on('data', row => {
+      .on("error", (error) => console.error(error))
+      .on("data", (row) => {
         row.id = Number(row.id);
         row.question_id = Number(row.question_id);
         row.reported = Number(row.reported);
         row.helpful = Number(row.helpful);
-        row.photos = photos[row.id]
 
-        if (!answers[row.question_id]) {
-          answers[row.question_id] = [row];
-        } else {
-          answers[row.question_id].push(row);
+        if (
+          !isNaN(row.id) &&
+          !isNaN(row.question_id) &&
+          !isNaN(row.reported) &&
+          !isNaN(row.helpful)
+        ) {
+          answers.push(row);
         }
       })
-      .on('end', rowCount => resolve(answers));
-  })
-}
-//parseAnswers()
-
-
-function parseQuestions(answers) {
-  return new Promise((resolve, reject) => {
-    let questions = []
-    fs.createReadStream('./csv_files/questions_test.csv')
-    .pipe(csv.parse({ headers: true }))
-    .on('error', error => console.error(error))
-    .on('data', row => {
-      row.id = Number(row.id)
-      row.product_id = Number(row.product_id);
-      row.reported = Number(row.reported);
-      row.helpful = Number(row.helpful);
-      row.answers = answers[row.id]
-      questions.push(row)
-    })
-    .on('end', rowCount => resolve(questions));
+      .on("end", (rowCount) => resolve(answers));
   });
 }
 
+function parseQuestions() {
+  return new Promise((resolve, reject) => {
+    let questions = [];
+    fs.createReadStream("./csv_files/questions.csv")
+      .pipe(csv.parse({ headers: true }))
+      .on("error", (error) => console.error(error))
+      .on("data", (row) => {
+        row.id = Number(row.id);
+        row.product_id = Number(row.product_id);
+        row.reported = Number(row.reported);
+        row.helpful = Number(row.helpful);
 
-async function questionsCollection() {
-  let photos = await parsePhotos();
-  let answers = await parseAnswers(photos);
-  let questions = await parseQuestions(answers);
-  return questions;
+        if (
+          !isNaN(row.id) &&
+          !isNaN(row.product_id) &&
+          !isNaN(row.reported) &&
+          !isNaN(row.helpful)
+        ) {
+          questions.push(row);
+        }
+      })
+      .on("end", (rowCount) => resolve(questions));
+  });
 }
 
-module.exports = {questionsCollection}
+// async function questionsCollection() {
+//   let photos = await parsePhotos();
+//   let answers = await parseAnswers(photos);
+//   let questions = await parseQuestions(answers);
+//   return questions;
+// }
+
+// async function parsedQuestions() {
+//   let allQuestions = await parseQuestions();
+//   return allQuestions;
+// }
+
+module.exports = { parseQuestions, parseAnswers, parsePhotos };
